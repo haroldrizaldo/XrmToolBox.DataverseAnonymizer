@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using XrmToolBox.DataverseAnonymizer.DataSources;
@@ -69,10 +70,18 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
 
                 foreach (string logicalName in logicalNames)
                 {
+                    string[] fieldNames = (rules ?? new AnonymizationRule[0])
+                                        .Where(r => r.Table.LogicalName == logicalName)
+                                        .Select(r => r.Field.LogicalName)
+                                        .Distinct()
+                                        .OrderBy(t => t)
+                                        .ToArray();
+
                     grouped.Add(new RuleProcessing
                         (
                             logicalName,
                             rules.First(r => r.Table.LogicalName == logicalName).Table.PrimaryIdAttribute,
+                            fieldNames,
                             rules.Where(r => r.Table.LogicalName == logicalName).ToArray(),
                             fetchFilters.ContainsKey(logicalName) ? fetchFilters[logicalName] : null
                         )
@@ -105,9 +114,9 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
                     Message = $"Getting {groupedRules.TableLogicalName} table record ID's...",
                     Work = (worker, args) =>
                     {
-                        Guid[] ids = CrmHelper.GetAllIds(control.Service, groupedRules.TableLogicalName, groupedRules.PrimaryIdFieldLogicalName, groupedRules.FetchXmlFilter);
+                        FieldIdAndValue[] fieldIdAndValues = CrmHelper.GetAllIdAndValues(control.Service, groupedRules.TableLogicalName, groupedRules.PrimaryIdFieldLogicalName, groupedRules.TableFieldName, groupedRules.FetchXmlFilter);
 
-                        groupedRules.RecordIds = ids;
+                        groupedRules.FieldIdsAndValues = fieldIdAndValues;
 
                         args.Result = groupedRules;
                     },
@@ -293,27 +302,15 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
             {
                 List<UpdateRequest> updateRequests = new List<UpdateRequest>();
 
-                Dictionary<AnonymizationRule, int> sequences = PrepareSequences(groupedRules.Rules);
-
-                foreach (Guid id in groupedRules.RecordIds)
+                foreach (FieldIdAndValue fieldIdAndValue in groupedRules.FieldIdsAndValues)
                 {
                     Entity updateRecord = new Entity(groupedRules.TableLogicalName);
-                    updateRecord[groupedRules.PrimaryIdFieldLogicalName] = id;
-
-                    foreach (AnonymizationRule rule in groupedRules.Rules)
+                    updateRecord[groupedRules.PrimaryIdFieldLogicalName] = fieldIdAndValue.PrimaryId;
+                    var fieldValues = fieldIdAndValue.FieldValues;
+                    foreach (var fieldValue in fieldValues)
                     {
-                        if (rule.Field.AttributeType == AttributeTypeCode.Money)
-                        {
-                            updateRecord[rule.Field.LogicalName] = new Money((decimal)GetRuleValue(rule, sequences));
-                        }
-                        if (rule.Field.AttributeType == AttributeTypeCode.Double)
-                        {
-                            updateRecord[rule.Field.LogicalName] = (double)(decimal)GetRuleValue(rule, sequences);
-                        }
-                        else
-                        {
-                            updateRecord[rule.Field.LogicalName] = GetRuleValue(rule, sequences);
-                        }                        
+                        AnonymizationRule rule = groupedRules.Rules.First(r => r.TableName == groupedRules.TableLogicalName && r.FieldName == fieldValue.Key);
+                        updateRecord[fieldValue.Key] = GetRuleValue(rule, fieldValue.Value == null ? "" : fieldValue.Value.ToString());
                     }
 
                     UpdateRequest updateRequest = new UpdateRequest
@@ -361,14 +358,21 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
             return sequences;
         }
 
-        private object GetRuleValue(AnonymizationRule rule, Dictionary<AnonymizationRule, int> sequences)
+        private object GetRuleValue(AnonymizationRule rule, string fieldValue)
         {
             if (rule.SequenceRule != null)
             {
-                int value = sequences[rule];
-                sequences[rule] = value + 1;
-
-                return rule.SequenceRule.Format.Replace("{SEQ}", value.ToString());
+                string maskedValue = "";
+                bool isExactWordReplacement = rule.SequenceRule.Format.Contains("Exact words:") ? true : false;
+                if (isExactWordReplacement)
+                {
+                    maskedValue = rule.SequenceRule.Format.Replace("Exact words:", "").TrimStart().TrimEnd();
+                }
+                else
+                {
+                    maskedValue = Regex.Replace(fieldValue, rule.SequenceRule.Format, "*");
+                }
+                return maskedValue;
             }
             else if (rule.BogusRule != null)
             {
@@ -386,6 +390,7 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
             {
                 return RandomHelper.GetRandomDate(rule.RandomDateRule.RangeStart, rule.RandomDateRule.RangeEnd);
             }
+
 
             throw new Exception($"Rule for {rule.TableName}\\{rule.FieldName} is not configured correctly.");
         }

@@ -4,12 +4,14 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XrmToolBox.DataverseAnonymizer.Models;
 
 namespace XrmToolBox.DataverseAnonymizer.Helpers
 {
     public static class CrmHelper
     {
-        public static Guid[] GetAllIds(IOrganizationService orgService, string entityName, string idField, string fetchXmlFilter)
+        
+        public static FieldIdAndValue[] GetAllIdAndValues(IOrganizationService orgService, string entityName, string idField, string[] fieldNames, string fetchXmlFilter)
         {
             QueryExpression query = null;
 
@@ -28,7 +30,13 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
                 }
             }
 
-            query.ColumnSet = new ColumnSet(idField);
+            var columns = new List<string> { idField };
+            if (fieldNames != null)
+            {
+                columns.AddRange(fieldNames);
+            }
+
+            query.ColumnSet = new ColumnSet(columns.ToArray());
             query.PageInfo = new PagingInfo
             {
                 PageNumber = 1,
@@ -36,7 +44,7 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
             };
             query.TopCount = null;
 
-            List<Guid> result = new List<Guid>();
+            List<FieldIdAndValue> result = new List<FieldIdAndValue>();
 
             int pageNr = 1;
 
@@ -44,7 +52,13 @@ namespace XrmToolBox.DataverseAnonymizer.Helpers
             {
                 EntityCollection ecoll = orgService.RetrieveMultiple(query);
 
-                result.AddRange(ecoll.Entities.Select(e => e.Id).ToArray());
+                result.AddRange(
+                    ecoll.Entities.Select(e => new FieldIdAndValue
+                    {
+                        PrimaryId = e.Id,
+                        FieldValues = fieldNames?.ToDictionary(fieldName => fieldName, fieldName => e.Contains(fieldName) ? e[fieldName] : null)
+                    })
+                );
 
                 if (!ecoll.MoreRecords)
                 {

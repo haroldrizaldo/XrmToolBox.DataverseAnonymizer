@@ -225,8 +225,6 @@ namespace XrmToolBox.DataverseAnonymizer
 
             comboField.DataSource = tableDataSource.Fields;
 
-            tbSequenceFormat.Text = $"{table.DisplayName} {{SEQ}}";
-
             RestoreFiltersForTable();
         }
 
@@ -465,7 +463,6 @@ namespace XrmToolBox.DataverseAnonymizer
             {
                 existingRule.SequenceRule = tabcRule.SelectedTab == tpSequence ? new SequenceRule
                 {
-                    SequenceStart = (int)nudSequenceStartFrom.Value,
                     Format = tbSequenceFormat.Text
                 } : null;
 
@@ -505,7 +502,6 @@ namespace XrmToolBox.DataverseAnonymizer
                     Field = (MetadataInfo)comboField.SelectedItem,
                     SequenceRule = tabcRule.SelectedTab == tpSequence ? new SequenceRule
                     {
-                        SequenceStart = (int)nudSequenceStartFrom.Value,
                         Format = tbSequenceFormat.Text
                     } : null,
                     BogusRule = tabcRule.SelectedTab == tpFakeData ? new BogusRule
@@ -571,7 +567,6 @@ namespace XrmToolBox.DataverseAnonymizer
 
             if (rule.SequenceRule != null)
             {
-                nudSequenceStartFrom.Value = rule.SequenceRule.SequenceStart;
                 tbSequenceFormat.Text = rule.SequenceRule.Format;
                 tabcRule.SelectedTab = tpSequence;
             }

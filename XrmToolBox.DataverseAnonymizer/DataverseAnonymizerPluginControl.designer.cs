@@ -78,11 +78,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.tabcRule = new System.Windows.Forms.TabControl();
             this.tpSequence = new System.Windows.Forms.TabPage();
-            this.label13 = new System.Windows.Forms.Label();
             this.tbSequenceFormat = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.nudSequenceStartFrom = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
             this.tpFakeData = new System.Windows.Forms.TabPage();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -127,6 +124,7 @@
             this.ttbFeedback = new System.Windows.Forms.ToolStripButton();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.label6 = new System.Windows.Forms.Label();
             this.gbField.SuspendLayout();
             this.contentPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRules)).BeginInit();
@@ -136,7 +134,6 @@
             this.gbRule.SuspendLayout();
             this.tabcRule.SuspendLayout();
             this.tpSequence.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSequenceStartFrom)).BeginInit();
             this.tpFakeData.SuspendLayout();
             this.tpRandomInt.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRandomIntRangeTo)).BeginInit();
@@ -756,77 +753,35 @@
             // 
             // tpSequence
             // 
-            this.tpSequence.Controls.Add(this.label13);
+            this.tpSequence.Controls.Add(this.label6);
             this.tpSequence.Controls.Add(this.tbSequenceFormat);
             this.tpSequence.Controls.Add(this.label7);
-            this.tpSequence.Controls.Add(this.nudSequenceStartFrom);
-            this.tpSequence.Controls.Add(this.label6);
             this.tpSequence.Location = new System.Drawing.Point(4, 28);
             this.tpSequence.Name = "tpSequence";
             this.tpSequence.Padding = new System.Windows.Forms.Padding(3);
             this.tpSequence.Size = new System.Drawing.Size(646, 125);
             this.tpSequence.TabIndex = 0;
-            this.tpSequence.Text = "Sequence";
+            this.tpSequence.Text = "RegEx";
             this.tpSequence.UseVisualStyleBackColor = true;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(183, 68);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(265, 45);
-            this.label13.TabIndex = 2;
-            this.label13.Text = "{SEQ} will be replaced with the sequence number.\r\nFor example \"My {SEQ} test\" wil" +
-    "l become:\r\n\"My 1 test\", \"My 2 test\", (...) ";
             // 
             // tbSequenceFormat
             // 
             this.tbSequenceFormat.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSequenceFormat.Location = new System.Drawing.Point(186, 36);
+            this.tbSequenceFormat.Location = new System.Drawing.Point(23, 39);
             this.tbSequenceFormat.Name = "tbSequenceFormat";
             this.tbSequenceFormat.Size = new System.Drawing.Size(443, 26);
             this.tbSequenceFormat.TabIndex = 1;
-            this.tbSequenceFormat.Text = "Account {SEQ}";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(182, 10);
+            this.label7.Location = new System.Drawing.Point(19, 13);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 19);
+            this.label7.Size = new System.Drawing.Size(141, 19);
             this.label7.TabIndex = 27;
-            this.label7.Text = "Format:";
-            // 
-            // nudSequenceStartFrom
-            // 
-            this.nudSequenceStartFrom.Location = new System.Drawing.Point(17, 37);
-            this.nudSequenceStartFrom.Maximum = new decimal(new int[] {
-            1410065408,
-            2,
-            0,
-            0});
-            this.nudSequenceStartFrom.Name = "nudSequenceStartFrom";
-            this.nudSequenceStartFrom.Size = new System.Drawing.Size(120, 27);
-            this.nudSequenceStartFrom.TabIndex = 0;
-            this.nudSequenceStartFrom.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(13, 10);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(84, 19);
-            this.label6.TabIndex = 25;
-            this.label6.Text = "Start from:";
+            this.label7.Text = "Regular Expression:";
             // 
             // tpFakeData
             // 
@@ -1380,6 +1335,18 @@
             this.openFileDialog.Filter = "JSON files|*.json|All files|*.*";
             this.openFileDialog.RestoreDirectory = true;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.label6.Location = new System.Drawing.Point(24, 79);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(538, 26);
+            this.label6.TabIndex = 33;
+            this.label6.Text = "Note: If replacing with exact words, add \"Exact words:\" in the beginning followed" +
+    " by the actual word replacement. \r\nEx. Exact words: sample string";
+            // 
             // DataverseAnonymizerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
@@ -1406,7 +1373,6 @@
             this.tabcRule.ResumeLayout(false);
             this.tpSequence.ResumeLayout(false);
             this.tpSequence.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSequenceStartFrom)).EndInit();
             this.tpFakeData.ResumeLayout(false);
             this.tpFakeData.PerformLayout();
             this.tpRandomInt.ResumeLayout(false);
@@ -1451,8 +1417,6 @@
         private System.Windows.Forms.TabPage tpSequence;
         private System.Windows.Forms.TextBox tbSequenceFormat;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.NumericUpDown nudSequenceStartFrom;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TabPage tpFakeData;
         private System.Windows.Forms.ComboBox comboBogusLocale;
         private System.Windows.Forms.Label label11;
@@ -1464,7 +1428,6 @@
         private System.Windows.Forms.Button bSave;
         private System.Windows.Forms.DataGridView dgvRules;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox cbBypassPlugins;
         private System.Windows.Forms.CheckBox cbBypassFlows;
         private System.Windows.Forms.Label lbBypassInfo;
@@ -1524,5 +1487,6 @@
         private System.Windows.Forms.Button bRandomDateSample;
         private System.Windows.Forms.Label lbRandomDateTo;
         private System.Windows.Forms.Label lbRandomDateFrom;
+        private System.Windows.Forms.Label label6;
     }
 }

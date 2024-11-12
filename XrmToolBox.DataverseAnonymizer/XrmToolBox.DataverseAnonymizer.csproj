@@ -197,6 +197,7 @@
     <Compile Include="Helpers\DataUpdateRunner.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\StateSaveLoadHelper.cs" />
+    <Compile Include="Models\FieldIdAndValue.cs" />
     <Compile Include="Rules\BogusDataSetWithMethods.cs" />
     <Compile Include="Rules\BogusRule.cs" />
     <Compile Include="Rules\RandomDateRule.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Models\TableMetadataInfo.cs" />
     <Compile Include="Models\MetadataInfo.cs" />
     <Compile Include="Rules\AnonymizationRule.cs" />
+    <Compile Include="Rules\RegexMaskRule.cs" />
     <Compile Include="Rules\SequenceRule.cs" />
     <Compile Include="Models\WorkSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
